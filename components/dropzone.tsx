@@ -78,7 +78,9 @@ export default function Dropzone() {
   const [is_done, setIsDone] = useState<boolean>(false);
   const ffmpegRef = useRef<any>(null);
   const [defaultValues, setDefaultValues] = useState<string>("video");
-  const [selcted, setSelected] = useState<string>("...");
+  const [selectedValues, setSelectedValues] = useState<{
+    [key: string]: string;
+  }>({});
   const accepted_files = {
     "image/*": [
       ".jpg",
@@ -275,15 +277,13 @@ export default function Dropzone() {
                 <span>Convert to</span>
                 <Select
                   onValueChange={(value) => {
-                    if (extensions.audio.includes(value)) {
-                      setDefaultValues("audio");
-                    } else if (extensions.video.includes(value)) {
-                      setDefaultValues("video");
-                    }
-                    setSelected(value);
-                    updateAction(action.file_name, value);
+                    setSelectedValues((prev) => ({
+                      ...prev,
+                      [action.file_name]: value as string, // Ensure value is a string
+                    }));
+                    updateAction(action.file_name, value as string); // Ensure value is a string
                   }}
-                  value={selcted}
+                  value={selectedValues[action.file_name] || "..."}
                 >
                   <SelectTrigger className="w-32 outline-none focus:outline-none focus:ring-0 text-center text-muted-foreground bg-inherit text-md font-medium">
                     <SelectValue placeholder="..." />
